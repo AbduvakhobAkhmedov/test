@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+use OpiyOrg\AriClient\Exception\AsteriskRestInterfaceException;
+use OpiyOrg\AriClient\Client\Rest\Settings as AriRestClientSettings;
+use OpiyOrg\AriClient\Client\Rest\Resource\Channels as AriChannelsRestResourceClient;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Of course inject your own REST client settings here.
+$ariChannelsRestResourceClient = new AriChannelsRestResourceClient(
+    new AriRestClientSettings('asterisk', 'asterisk')
+);
+
+try {
+    // Call the specified number
+    $originatedChannel = $ariChannelsRestResourceClient->originate(
+        'PJSIP/+4940123456789',
+        [
+            'app' => 'MyExampleStasisApp'
+        ]
+    );
+} catch (AsteriskRestInterfaceException $e) {
+    printf("Error occurred: '%s'\n", $e->getMessage());
+}
+
+printf("The originated channel has the ID '%s'\n", $originatedChannel->getId());
